@@ -26,13 +26,20 @@ const UserSchema = new mongoose.Schema({
     },
     organization:{
         type:mongoose.Schema.Types.ObjectId,
-        ref:Org,
+        ref:"Organization",
         default:null
     },
-    Department:{
+    department:{
         type:mongoose.Schema.Types.ObjectId,
-        ref:Dept,
+        ref:"Deptpartment",
         default:null
+    },
+    leaves:{
+        type:["Leave"],
+    },
+    isValid:{
+        type:Boolean,
+        default:true,
     }
 })
 

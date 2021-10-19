@@ -1,6 +1,6 @@
 var mongoose = require('mongoose');
-
-var Organization = require('./Organization')
+const LeaveType = require('./LeaveType');
+const User = require('./User');
 
 const DepartSchema = new mongoose.Schema({
     name: {
@@ -11,11 +11,14 @@ const DepartSchema = new mongoose.Schema({
         type:String,
         required:true
     },
-    organization:{
-        type: mongoose.Schema.Types.ObjectId,
-        require:true,
-        ref:Organization,
+    manager:{
+        type:mongoose.Schema.Types.ObjectId,
+        ref:"User",
         default:null
+    },
+    availabelleaves:{
+        type:["LeaveType"]
     }
+    
 })
-module.exports = mongoose.model('Department', DepartSchema);
+module.exports = mongoose.models.Department || mongoose.model('Department', DepartSchema);

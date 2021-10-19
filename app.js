@@ -23,6 +23,9 @@ var mongoose = require('mongoose');
 
 //Set up default mongoose connection
 var mongoDB = 'mongodb://localhost:27017/lms';
+Object.keys(mongoose.connection.models).forEach(key => {
+  delete mongoose.connection.models[key];
+});
 mongoose.connect(mongoDB, {useNewUrlParser: true, useUnifiedTopology: true});
 
 //Get the default connection
