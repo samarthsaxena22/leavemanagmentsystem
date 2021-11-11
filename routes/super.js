@@ -4,7 +4,7 @@ var User = require("../Model/User");
 var Organization = require("../Model/Organization");
 var Department = require("../Model/Department");
 var bcrypt = require("bcrypt");
-
+var mongoose = require('mongoose')
 
 /* GET home page. */
 
@@ -26,13 +26,12 @@ router.get("/signin",async (req,res)=>{
 router.post("/signin", async (req,res)=>{
   
   const {email,password} = req.body
-  
-    const user = User.findOne({email:email}).exec(async (err,data)=>{
+  console.log(req.body)
+    const user = User.findOne( { email:email} , async (err,data) => {
       console.log(data,err);
       if(data){
         const validPassword = await bcrypt.compare(password, data.password);
         if(validPassword){
-          
           res.render('dashboard',{user:data})
         }
       }
@@ -40,9 +39,8 @@ router.post("/signin", async (req,res)=>{
 
     })
     //console.log(user);
-    
-  }
-)
+})
+  
 
 router.post("/signup", async (req, res) => {
   console.log(req.body)
@@ -59,17 +57,23 @@ router.post("/signup", async (req, res) => {
   });
 });
 
-router.post("/addorg", function (req, res, next) {
-  const _Organization = new Organization({...req.body,supervisor:req.cookies.user});
-  _Organization.save(function (err, data) {
+router.post("/addorg", async function (req, res, next) {
+  console.log(mongoose.Types.ObjectId(req.cookies.user))
+  const _Organization = await  new Organization({...req.body})
+  
+  console.log(_Organization)
+  _Organization.save( async function  (err, data) {
     if (err) res.send({ err: err });
     else {
+      
       const user=req.cookies.user;
-      console.log(user)
-      User.findOneAndUpdate({_id:user},{organization:data._id});
+      console.log(user,typeof(user), req.cookies)
+      let test = await User.findOneAndUpdate({_id:user},{organization:mongoose.Types.ObjectId(data._id)});
+      console.log(test)
       res.render("signin");
     }
-  }); 
+  });
+ 
 });
 router.post("/adddept", function (req, res, next) {
   console.log(req.body);
@@ -85,7 +89,9 @@ router.post("/adddept", function (req, res, next) {
 
 router.get("/dashboard",async (req,res)=>{
   if(req.cookies.user){
-    const user = await User.findOne({_id:req.cookies.user}).populate("organization").populate("department");
+    console.log(req.cookies.user)
+    const user = await User.findOne({_id:req.cookies.user}).populate('organization');
+    console.log(user);
     res.render("dashboard",{user:user})
   }
   else
