@@ -27,7 +27,7 @@ router.post("/signin", async (req,res)=>{
   
   const {email,password} = req.body
   console.log(req.body)
-    const user = User.findOne( { email:email} , async (err,data) => {
+    const user = User.findOne({email:req.body.email} , async (err,data) => {
       console.log(data,err);
       if(data){
         const validPassword = await bcrypt.compare(password, data.password);
@@ -90,7 +90,7 @@ router.post("/adddept", function (req, res, next) {
 router.get("/dashboard",async (req,res)=>{
   if(req.cookies.user){
     console.log(req.cookies.user)
-    const user = await User.findOne({_id:req.cookies.user}).populate('organization');
+    const user = await User.findOne({_id:req.cookies.user});
     console.log(user);
     res.render("dashboard",{user:user})
   }
