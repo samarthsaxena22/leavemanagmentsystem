@@ -7,7 +7,12 @@ const cors = require('cors');
 var indexRouter = require('./routes/index');
 var superRouter = require('./routes/super');
 var userRouter = require('./routes/users');
+var managerRouter = require('./routes/manager');
 var app = express();
+var session = require('express-session')
+require('dotenv').config()
+const MongoStore = require('connect-mongo')
+
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
@@ -20,13 +25,14 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
 var mongoose = require('mongoose');
+const { env } = require('process');
 
 //Set up default mongoose connection
 var mongoDB = 'mongodb://localhost:27017/lms';
 Object.keys(mongoose.connection.models).forEach(key => {
   delete mongoose.connection.models[key];
 });
-mongoose.connect(mongoDB, {useNewUrlParser: true, useUnifiedTopology: true});
+const conn = mongoose.connect(mongoDB, {useNewUrlParser: true, useUnifiedTopology: true});
 
 //Get the default connection
 var db = mongoose.connection;
@@ -34,10 +40,27 @@ var db = mongoose.connection;
 //Bind connection to error event (to get notification of connection errors)
 db.on('error', console.error.bind(console, 'MongoDB connection error:'));
 
+
+var sess = {
+  secret: process.env.STORE_SECRET,
+  resave: false,
+  saveUninitialized: true,
+  store:MongoStore.create({mongoUrl:'mongodb://localhost:27017/lms'}),
+  cookie: {
+    maxAge:24*60*60*1000
+  }
+}
+
+if (app.get('env') === 'production') {
+  app.set('trust proxy', 1) // trust first proxy
+  sess.cookie.secure = true // serve secure cookies
+}
+
+app.use(session(sess))
 app.use('/', indexRouter);
 app.use('/super', superRouter);
 app.use('/user',userRouter);
-
+app.use('/manager',managerRouter)
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
   next(createError(404));

@@ -16,16 +16,30 @@ const LeaveSchema = new mongoose.Schema({
    status:{
     type: String,
     enum : ['Pending','Approved','Rejected'],
-    default: 'Employee'
+    default: 'Pending'
    },
-   date:{
+   startingdate:{
        type:Date
+   },
+   endingdate:{
+       type:Date
+   },
+   reason:{
+       type:String
    },
    leavetype:{
        type: mongoose.Schema.Types.ObjectId,
        ref:"LeaveType"
-   }
-})
+   },
+   organization:{
+    type: mongoose.Schema.Types.ObjectId,
+    ref:"Organization"
+    },
+    department:{
+    type: mongoose.Schema.Types.ObjectId,
+    ref:"Department"
+    }
+    })
 
 
 module.exports = mongoose.model('Leave', LeaveSchema);

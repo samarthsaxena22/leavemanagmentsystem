@@ -13,83 +13,49 @@ const LeaveType = require("../Model/LeaveType");
 
 //get Request
 router.get("/signup", function (req, res, next) {
-  res.render("signup", { user: req.cookies.user });
-});
-router.get("/signin", async (req, res) => {
-  if (req.cookies.user) {
-    const user = await User.findOne({ _id: req.cookies.user }).select("role");
-    console.log(user);
-    if (user === "Supervisor") res.redirect("/super/dashboard");
-    else {
-      res.clearCookie("user");
-      res.redirect("/");
-    }
-  } else res.render("signin");
-});
-
-//post Request
-router.post("/signin", async (req, res) => {
-  const { email, password } = req.body;
-  console.log(req.body);
-  const user = User.findOne({ email: req.body.email }, async (err, data) => {
-    console.log(data, err);
-    if (data) {
-      const validPassword = await bcrypt.compare(password, data.password);
-      if (validPassword) {
-        res.cookie(`user`, data._id);
-        res.redirect("/super/dashboard");
-      }
-    } else res.send(JSON.stringify(err));
-  });
-  //console.log(user);
+  res.render("./super/signup", { user: req.session.userId });
 });
 
 router.post("/signup", async (req, res) => {
-  console.log(req.body);
-  const _user = new User(req.body);
+  const _user = new User({...req.body,role:"Supervisor"});
   const salt = await bcrypt.genSalt(10);
   _user.password = await bcrypt.hash(_user.password, salt);
   _user.save(function (err, data) {
     if (err) res.send({ err: err });
     else {
-      console.log(data._id);
-      res.cookie(`user`, data._id);
-      res.render("signup", { user: data._id });
+      req.session.userId = data._id
+      res.render("./super/signup", { user: data._id });
     }
   });
 });
 
-router.get("/signout", (req, res) => {
-  res.clearCookie("user");
-  res.redirect("/signin");
-});
 router.get("/profile", async (req, res) => {
-  const user = await User.findOne({ _id: req.cookies.user });
+  const user = await User.findOne({ _id: req.session.userId });
 
-  res.render("dashboard", { data: user, tab: "profile" });
+  res.render("./super/dashboard", { data: user, tab: "profile" });
 });
 
 router.post("/addorg", async function (req, res, next) {
-  console.log(mongoose.Types.ObjectId(req.cookies.user));
+
   const _Organization = await new Organization({ ...req.body });
 
   console.log(_Organization);
   _Organization.save(async function (err, data) {
     if (err) res.send({ err: err });
     else {
-      const user = req.cookies.user;
-      console.log(user, typeof user, req.cookies);
+            
       let test = await User.findOneAndUpdate(
-        { _id: user },
-        { organization: mongoose.Types.ObjectId(data._id) }
+        { _id: req.session.userId },
+        { organization:data._id }
       );
-      console.log(test);
+      
       res.redirect("/signin");
     }
   });
 });
-router.post("/manager", function (req, res, next) {
+router.post("/manager", async function (req, res, next) {
   //console.log(req.body);
+  const org = await User.findOne({_id:req.session.userId});
   const _dept = new Department({
     name: req.body.deptname,
     desc: req.body.deptdesc,
@@ -104,7 +70,11 @@ router.post("/manager", function (req, res, next) {
         password: "test",
         role: "Manager",
         department: mongoose.Types.ObjectId(data._id),
+        organization:org.organization
       });
+      
+     
+      
       const salt = await bcrypt.genSalt(10);
       _user.password = await bcrypt.hash(_user.password, salt);
       console.log(await User.findOne({ _id: req.cookies.user }).select("_id"));
@@ -133,27 +103,27 @@ router.post("/leavetype", async (req, res) => {
         { $push:{availabelleaves: data} }
       );
       console.log(org);
-      res.send("ok");
+      res.redirect('/super/dashboard');
     }
   });
 });
 
 router.get("/dashboard", async (req, res) => {
-  if (req.cookies.user) {
-    //console.log(req.cookies.user)
-    const user = await User.findOne({ _id: req.cookies.user });
-    // console.log(user);
-    res.render("dashboard", { user: user, type:"Dashboard" });
+  if (req.session.isAuth && req.session.userRole==="Supervisor") {
+    const user = await User.findOne({ _id: req.session.userId });
+    res.status(200)
+    res.render("./super/dashboard", { user: user, type:"Dashboard" });
+    
   } else res.render("signin");
 });
 
 router.get("/managers",async (req,res)=>{
 
-  const org = await User.findOne({_id:req.cookies.user}).select("organization");
-  
-  const data = await User.find({role:"Manager",org}).populate('department','name',Department);
-  console.log(data)
-  res.render("dashboard",{data:data,type:"Managers"})
+  const org = await User.findOne({_id:req.session.userId}).select("organization");
+  console.log(org)
+  const data = await User.find({role:"Manager",organization:org.organization}).populate('department','name',Department);
+  //console.log(data)
+  res.render("./super/dashboard",{data:data,type:"Managers"})
 
 })
 router.get('/managers/delete/:id/:dept',async(req,res)=>{

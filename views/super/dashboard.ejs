@@ -1,4 +1,4 @@
-<%- include('partials/Header') %>
+<%- include('../partials/Header') %>
 
   <body>
 
@@ -33,7 +33,7 @@
     field renderer id: 278" autofill-prediction="UNKNOWN_TYPE">
       <div class="navbar-nav">
         <div class="nav-item text-nowrap">
-          <a class="nav-link px-3"  href="/super/signout" >Sign out</a>
+          <a class="nav-link px-3"  href="/signout" >Sign out</a>
         </div>
       </div>
     </header>
@@ -180,11 +180,12 @@
                           <td>1</td>
                           <td><%=man.name%></td>
                           <td><%=man.department.name%></td>
-                          <td class="text-center"><a class='btn btn-info btn-xs' href="#"><span class="glyphicon glyphicon-edit"></span> Edit</a> <a href="/super/managers/delete/<%= man._id %>/<%= man.department._id %>" class="btn btn-danger btn-xs"><span class="glyphicon glyphicon-remove"></span> Del</a></td>
+                          <td class="text-center"> <a href="/super/managers/delete/<%= man._id %>/<%= man.department._id %>" class="btn btn-danger btn-xs"><span class="glyphicon glyphicon-remove"></span> Del</a></td>
                       </tr>
                   <%}%>
+                  
               </table>
-            
+
           </div>
             <%}%>
 
@@ -371,7 +372,7 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.4/dist/Chart.min.js"
       integrity="sha384-zNy6FEbO50N+Cg5wap8IKA4M/ZnLJgzc6w2NqACZaK0u0FXfOWRRJOnQtpZun8ha"
       crossorigin="anonymous"></script>
-    <script src="dashboard.js"></script>
+    
 
 
   </body>

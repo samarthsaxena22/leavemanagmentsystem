@@ -31,7 +31,7 @@
     field renderer id: 278" autofill-prediction="UNKNOWN_TYPE">
       <div class="navbar-nav">
         <div class="nav-item text-nowrap">
-          <a class="nav-link px-3" href="#">Sign out</a>
+          <a class="nav-link px-3" href="/signout">Sign out</a>
         </div>
       </div>
     </header>
@@ -99,6 +99,52 @@
                 </table>
               
             </div>
+            <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel"
+              aria-hidden="true">
+              <div class="modal-dialog">
+                <div class="modal-content">
+                  <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Leave Request</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                  </div>
+                  <div class="modal-body">
+                    <form action="/user/leave/request" method="POST">
+                      <div class="mb-3">
+                        <label for="inputName" class="form-label">Starting Date</label>
+                        <input type="date" class="form-control" id="inputName" aria-describedby="emailHelp" name="startingdate">
+                      </div>
+                      <div class="mb-3">
+                        <label for="inputName" class="form-label">Ending Date</label>
+                        <input type="date" class="form-control" id="inputName" aria-describedby="emailHelp" name="endingdate">
+                      </div>
+                      <div class="mb-3">
+                        <select class="form-select" aria-label="Default select example" name="leavetype">
+                          <% for(var x of leavetype) {%>
+                          <option value="<%=x._id%>"><%=x.name %></option>
+                          <%}%>
+                          
+                        </select>  
+                      </div>
+                      <div class="mb-3">
+                        <label for="inputName" class="form-label">Description</label>
+                        <input type="text" class="form-control" id="inputName" aria-describedby="emailHelp" name="reason">
+                      </div>
+  
+                      <div class="mb-3 form-check">
+                        <input type="checkbox" class="form-check-input" id="exampleCheck1">
+                        <label class="form-check-label" for="exampleCheck1">Do you approve the manager</label>
+                      </div>
+                      
+                   
+                  </div>
+                  <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-primary">Add Dept</button>
+                  </div>
+                </form>
+                </div>
+              </div>
+            </div>
               <%}%>
   
             
@@ -108,26 +154,21 @@
               <div class="modal-dialog">
                 <div class="modal-content">
                   <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalLabel">Add Managers</h5>
+                    <h5 class="modal-title" id="exampleModalLabel">Leave Request</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                   </div>
                   <div class="modal-body">
                     <form action="/super/manager" method="POST">
                       <div class="mb-3">
-                        <label for="inputName" class="form-label">Name</label>
-                        <input type="text" class="form-control" id="inputName" aria-describedby="emailHelp" name="name">
+                        <label for="inputName" class="form-label">Starting Date</label>
+                        <input type="date" class="form-control" id="inputName" aria-describedby="emailHelp" name="name">
                       </div>
                       <div class="mb-3">
-                        <label for="inputName" class="form-label">Email</label>
-                        <input type="text" class="form-control" id="inputName" aria-describedby="emailHelp" name="email">
+                        <label for="inputName" class="form-label">Ending Date</label>
+                        <input type="date" class="form-control" id="inputName" aria-describedby="emailHelp" name="email">
                       </div>
                       <div class="mb-3">
-                        <label for="inputName" class="form-label">Phone Number</label>
-                        <input type="text" class="form-control" id="inputName" aria-describedby="emailHelp" name="phno">
-                      </div>
-                      <h3>Department Detials</h3>
-                      <div class="mb-3">
-                        <label for="inputName" class="form-label">Department Name</label>
+                        <label for="inputName" class="form-label">Leave Type</label>
                         <input type="text" class="form-control" id="inputName" aria-describedby="emailHelp" name="deptname">
                       </div>
                       <div class="mb-3">

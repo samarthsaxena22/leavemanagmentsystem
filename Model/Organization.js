@@ -20,7 +20,7 @@ const OrgSchema = new mongoose.Schema({
         type:["Department"],
         
     },
-    availabelleaves:{
+    availableleaves:{
         type:["LeaveType"]
     }
 })
