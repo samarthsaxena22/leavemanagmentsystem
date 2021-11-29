@@ -8,7 +8,7 @@ const DepartSchema = new mongoose.Schema({
         required:true
     },
     desc:{
-        type:String,
+    type:String,
         required:true
     },
     manager:{
@@ -16,9 +16,7 @@ const DepartSchema = new mongoose.Schema({
         ref:"User",
         default:null
     },
-    availabelleaves:{
-        type:["LeaveType"]
-    }
+
     
 })
 module.exports = mongoose.models.Department || mongoose.model('Department', DepartSchema);

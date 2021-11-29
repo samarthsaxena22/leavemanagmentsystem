@@ -15,4 +15,4 @@ const LeaveTypeSchema = new mongoose.Schema({
         type:Number
     }
 })
-module.exports = mongoose.model('Organization', LeaveTypeSchema);
+module.exports = mongoose.model('LeaveType', LeaveTypeSchema);

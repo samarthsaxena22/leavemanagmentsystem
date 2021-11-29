@@ -6,7 +6,7 @@ var logger = require('morgan');
 const cors = require('cors');
 var indexRouter = require('./routes/index');
 var superRouter = require('./routes/super');
-
+var userRouter = require('./routes/users');
 var app = express();
 
 // view engine setup
@@ -36,6 +36,7 @@ db.on('error', console.error.bind(console, 'MongoDB connection error:'));
 
 app.use('/', indexRouter);
 app.use('/super', superRouter);
+app.use('/user',userRouter);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

@@ -1,6 +1,6 @@
 var mongoose = require('mongoose');
-const Org  = require('./Organization')
-const Dept  = require('./Department')
+require('./Organization')
+require('./Department')
 
 const UserSchema = new mongoose.Schema({
     name: {
@@ -26,15 +26,15 @@ const UserSchema = new mongoose.Schema({
     },
     organization:{
         type:mongoose.Schema.Types.ObjectId,
-        ref:"Organization",
+        ref:'Organization',
         default:null
     },
     department:{
         type:mongoose.Schema.Types.ObjectId,
-        ref:"Deptpartment",
+        ref:"Department",
         default:null
     },
-    leaves:{
+    leaves:{  
         type:["Leave"],
     },
     isValid:{

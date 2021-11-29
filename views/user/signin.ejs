@@ -1,0 +1,30 @@
+<%- include('../partials/header') %>
+    <body class="text-center">
+    
+        <div class="container mt-4 w-50 p-5 rounded-3 login">
+        <main class="form-signin">
+          <form method="POST" action="/user/signin">
+            <!-- <img class="mb-4" src="/docs/5.1/assets/brand/bootstrap-logo.svg" alt="" width="72" height="57"> -->
+            <h1 class="h3 mb-3 fw-normal">User Log In</h1>
+            <div class="form-floating">
+              <input type="email" class="form-control" id="email" placeholder="name@example.com" name="email">
+              <label for="email">Email address</label>
+            </div>
+            <div class="form-floating">
+              <input type="password" class="form-control" id="password" placeholder="Password" name="password">
+              <label for="password">Password</label>
+            </div>
+        
+            <div class="checkbox mb-3">
+              <label>
+                <input type="checkbox" value="remember-me"> Remember me
+              </label>
+            </div>
+            <button class="w-100 btn btn-lg btn-primary mt-3 " type="submit">Login</button>
+          </form>
+        </main>
+    </div>
+    
+</body>
+<script src="bootstrap.min.js"></script>
+</html>

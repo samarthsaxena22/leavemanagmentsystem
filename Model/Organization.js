@@ -19,6 +19,9 @@ const OrgSchema = new mongoose.Schema({
     departments:{
         type:["Department"],
         
+    },
+    availabelleaves:{
+        type:["LeaveType"]
     }
 })
 module.exports =  mongoose.models.Organization || mongoose.model('Organization', OrgSchema);
