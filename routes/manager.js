@@ -4,6 +4,8 @@ const User = require('../Model/User');
 var router = express.Router();
 var bcrypt = require('bcrypt');
 const Department = require('../Model/Department');
+const Leave = require('../Model/Leave');
+var mongoose = require("mongoose");
 /* GET users listing. */
 function getleaves(org){
 
@@ -23,9 +25,9 @@ router.get("/dashboard",async (req,res)=>{
 })
 router.get("/employee",async (req,res)=>{
 
-  const org = await User.findOne({_id:req.session.userId}).select("organization");
+  const org = await User.findOne({_id:req.session.userId}).select("organization department");
   
-  const data = await User.find({role:"Employee",org}).populate('department','name',Department);
+  const data = await User.find({role:"Employee",organization:org.organization,department: org.department}).populate('department','name',Department);
   //console.log(data)
   res.render("./manager/dashboard",{data:data,type:"Employee"})
 
@@ -61,11 +63,11 @@ router.post("/employee", async function (req, res, next) {
 
 router.get("/leaves",async (req,res)=>{
   if(req.cookies.user){
-    console.log(req.cookies.user)
-    const user = await User.findOne({_id:req.cookies.user});
-    const leaves = await 
+    const user = await User.findOne({_id:req.session.userId});
+    const leaves = await Leave.find({organization:user.organization,department:user.department}).populate('user_id','name',User)
+    console.log(user)
     
-    res.render("./manager/dashboard",{data:user,type:"Leaves"})
+    res.render("./manager/dashboard",{data:leaves,type:"Leaves"})
   }
   else
   res.redirect('/signin')
@@ -74,6 +76,16 @@ router.get("/leaves",async (req,res)=>{
   
 router.post('/leave/request',async (req,res)=>{
   console.log(req.body);
+})
+router.get('/leave/approve/:id',async(req,res)=>{
+  console.log(req.params)
+  await Leave.findOneAndUpdate({_id:mongoose.Types.ObjectId(req.params.id)},{status:"Approved"}) 
+  res.redirect("/manager/leaves")
+})
+router.get('/leave/reject/:id',async(req,res)=>{
+  console.log(req.params)
+  await Leave.findOneAndUpdate({_id:mongoose.Types.ObjectId(req.params.id)},{status:"Rejected"}) 
+  res.redirect("/manager/leaves")
 })
 
 module.exports = router;
